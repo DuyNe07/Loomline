@@ -46,14 +46,14 @@ flowchart LR
 | Kho | SQL Server 2022 Developer (StatefulSet), DB `LoomlineDW`, 7 schema |
 | Điều phối | Apache Airflow 3 (Helm chính thức, CeleryExecutor, Asset + `run_registry`, sensor deferrable) |
 | Biến đổi | dbt-core 1.9 + dbt-sqlserver qua astronomer-cosmos |
-| Hạ tầng | Kubernetes của Docker Desktop (WSL2), KEDA scale worker 1 → 8 |
+| Hạ tầng | Kubernetes (kind) trên Docker Engine trong WSL2 Ubuntu, KEDA scale worker 1 → 8 |
 | CI/CD | GitHub Actions (lint, DAG integrity, diff unit test trên mssql container, dbt unit test) → GHCR → git-sync + Argo CD |
 
 ## Lộ trình
 
 | Tuần | Milestone | Chạy được vào Chủ nhật | Tag |
 |---|---|---|---|
-| 0 · 09–13/09 | Chuẩn bị | `kubectl get nodes` Ready, login read-only, `tables.yaml` | — |
+| 0 · 09–13/09 | Chuẩn bị | Cụm kind Ready, pod ra được SQL Server host, login read-only, `tables.yaml` | — |
 | 1 · 14–20/09 | Nền k8s + Bronze SCD2 | Diff chạy 2 lần: 1 U / 1 D / 1 I rồi 0 thay đổi | v0.1.0 |
 | 2 · 21–27/09 | dbt silver/gold + parity | Step Đan (2) và May (15–20), parity ≥ 95% trên 766 OC | v0.2.0 |
 | 3 · 28/09–04/10 | Ba luồng + selvedge + CI/CD | Daily 3 đêm liên tiếp, backfill 18 tháng, merge → pod mới < 10 phút | v0.3.0 |
@@ -81,7 +81,7 @@ sql/bronze/      diff_template.sql.j2 + tables.yaml (khoá, cột hash, cột OC
 sql/publish/     guard hồi quy, MERGE step, thay detail
 dbt/             models/{staging,silver,gold}, snapshots, seeds, tests, unit_tests
 tests/           DAG integrity, diff I/U/D, parity
-gitops/          Helm values Airflow, Argo CD Application, KEDA, mssql
+gitops/          Helm values Airflow, Argo CD Application, KEDA, mssql, kind cluster config
 docker/          image Airflow + dbt + msodbcsql18 + cosmos
 docs/            adr/, measurements/, runbook.md
 tools/           github-bootstrap (dựng Project, wiki, nhánh)
