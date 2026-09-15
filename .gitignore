@@ -217,3 +217,10 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 tools/github-bootstrap
+
+*.zip
+*.tar.gz
+*.whl
+*.egg
+*.egg-info
+*.dist-info
